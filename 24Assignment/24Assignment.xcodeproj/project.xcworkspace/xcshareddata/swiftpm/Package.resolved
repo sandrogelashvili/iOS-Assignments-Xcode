@@ -1,0 +1,15 @@
+{
+  "originHash" : "1aa0e90f8eb9c3870a2111c0bce17b10cfe50478616c1f116af55c0553d81014",
+  "pins" : [
+    {
+      "identity" : "simplenetworking",
+      "kind" : "remoteSourceControl",
+      "location" : "https://github.com/sandrogelashvili/SimpleNetworking.git",
+      "state" : {
+        "branch" : "master",
+        "revision" : "a4436af920382b4570af5d2b1de3463a51a5e7b9"
+      }
+    }
+  ],
+  "version" : 3
+}
