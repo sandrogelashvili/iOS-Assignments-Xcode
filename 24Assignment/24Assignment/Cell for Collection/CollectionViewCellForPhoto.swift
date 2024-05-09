@@ -37,7 +37,7 @@ class CollectionViewCellForPhoto: UICollectionViewCell {
         ])
     }
 }
-
+// MARK: თუ აქ მოდელი უნდა გავაკეთო, რომელიც foundation დააიმპორტებს მერე სურათი როგორ დაფეჩოო? 
 extension UIImageView {
     func loadImage(from urlString: String) {
         guard let url = URL(string: urlString) else { return }

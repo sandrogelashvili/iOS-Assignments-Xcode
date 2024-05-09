@@ -10,9 +10,11 @@ import UIKit
 final class MainPageViewController: UIViewController {
     // MARK: - Properties
     var viewModel: MainPageViewModel
+    private var dataSource: UICollectionViewDiffableDataSource<Section, String>!
+    private var sections = [Section]()
     
     // MARK: - UI Components
-     let collectionViewForPhotos: UICollectionView = {
+    let collectionViewForPhotos: UICollectionView = {
         let layout = UICollectionViewFlowLayout()
         layout.minimumLineSpacing = 1
         layout.minimumInteritemSpacing = 1
@@ -33,7 +35,7 @@ final class MainPageViewController: UIViewController {
         label.textAlignment = .center
         return label
     }()
-
+    
     // MARK: Lifecycle
     init(viewModel: MainPageViewModel) {
         self.viewModel = viewModel
@@ -49,16 +51,14 @@ final class MainPageViewController: UIViewController {
         setUpUI()
         viewModel.delegate = self
         viewModel.fetchImages()
-        
+        configureDataSource()
     }
     // MARK: - UI Setup
-   private func setUpUI() {
+    private func setUpUI() {
         view.backgroundColor = .white
         view.addSubview(titleForGallery)
         view.addSubview(collectionViewForPhotos)
         collectionViewForPhotos.delegate = self
-        collectionViewForPhotos.dataSource = self
-        collectionViewForPhotos.register(CollectionViewCellForPhoto.self, forCellWithReuseIdentifier: CollectionViewCellForPhoto.identifier)
         NSLayoutConstraint.activate([
             titleForGallery.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             titleForGallery.topAnchor.constraint(equalTo: view.topAnchor, constant: 60),
@@ -69,8 +69,24 @@ final class MainPageViewController: UIViewController {
         ])
     }
     // MARK: Methods
-
-
+    private func configureDataSource() {
+        collectionViewForPhotos.register(CollectionViewCellForPhoto.self, forCellWithReuseIdentifier: CollectionViewCellForPhoto.identifier)
+        dataSource = UICollectionViewDiffableDataSource<Section, String>(collectionView: collectionViewForPhotos) { (collectionView, indexPath, imageURL) -> UICollectionViewCell? in
+            let cell = collectionView.dequeueReusableCell(withReuseIdentifier: CollectionViewCellForPhoto.identifier, for: indexPath) as! CollectionViewCellForPhoto
+    // MARK: აქ გავიჭედე, ვიცი რო არასწორია მვვმ ზე, მაგრამ ვერ გავასწორე.
+            cell.imageForGallery.loadImage(from: imageURL)
+            //
+            return cell
+        }
+        applySnapshot()
+    }
+    
+    func applySnapshot() {
+        var snapshot = NSDiffableDataSourceSnapshot<Section, String>()
+        snapshot.appendSections([.main])
+        snapshot.appendItems(viewModel.imageURLs)
+        dataSource.apply(snapshot, animatingDifferences: true)
+    }
 }
 #Preview {
     MainPageViewController(viewModel: MainPageViewModel())
